@@ -28,6 +28,7 @@ This enterprise e-commerce platform showcases production-ready deployment excell
 - [Monitoring](#monitoring)
 - [Performance Optimization](#performance-optimization)
 
+
 ## ✨ Features
 
 ### Enterprise-Grade Deployment Infrastructure
@@ -89,6 +90,22 @@ This enterprise e-commerce platform showcases production-ready deployment excell
 ### Styling
 - **Tailwind CSS**: Utility-first CSS framework
 - **PostCSS**: CSS processing
+
+
+
+## 🔁 Repository & Deployment Integration Note
+
+### Gitea → GitHub Deployment Bridge
+
+The primary source repository for this project is hosted on **Gitea**.  
+However, due to current platform compatibility limitations, **Vercel does not natively support direct deployment from Gitea repositories**.
+
+To ensure:
+- reliable production deployments,
+- preview environments for pull requests,
+- and full CI/CD automation,
+
+the repository was **mirrored to GitHub**, which provides first-class integration with **Vercel** and **GitHub Actions**.
 
 ## 🏗 Architecture
 
