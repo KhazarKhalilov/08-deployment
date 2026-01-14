@@ -1,0 +1,53 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      deployment_id:
+        description: 'Deployment ID to rollback to (optional)'
+        required: false
+        type: string
+
+jobs:
+  rollback:
+    name: Rollback ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Rollback Vercel Deployment
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: |
+            ${{ github.event.inputs.deployment_id && format('--rollback={0}', github.event.inputs.deployment_id) || '--rollback' }}
+            ${{ github.event.inputs.environment == 'production' && '--prod' || '' }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Verify rollback
+        run: |
+          ENV_URL="${{ github.event.inputs.environment == 'production' && secrets.VERCEL_PRODUCTION_URL || secrets.VERCEL_STAGING_URL }}"
+          if [ -n "$ENV_URL" ]; then
+            echo "Verifying rollback..."
+            sleep 10
+            curl -f "$ENV_URL/api/health" || exit 1
+            echo "✅ Rollback verified"
+          fi
+
+      - name: Rollback notification
+        run: |
+          echo "🔄 Rollback completed for ${{ github.event.inputs.environment }}"
+          echo "✅ Application rolled back successfully"
+
