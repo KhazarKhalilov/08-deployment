@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import * as Sentry from '@sentry/nextjs'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -26,17 +25,7 @@ export class ErrorBoundary extends React.Component<
   }
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log to Sentry in production
-    if (process.env.NODE_ENV === 'production') {
-      Sentry.captureException(error, {
-        contexts: {
-          react: {
-            componentStack: errorInfo.componentStack,
-          },
-        },
-      })
-    }
-
+    // No Sentry: just log
     console.error('Error caught by boundary:', error, errorInfo)
   }
 
@@ -49,9 +38,11 @@ export class ErrorBoundary extends React.Component<
               Something went wrong
             </h1>
             <p className="text-gray-600 mb-8">
-              We're sorry, but something unexpected happened. Our team has been notified.
+              We&apos;re sorry, but something unexpected happened.
             </p>
+
             <button
+              type="button"
               onClick={() => {
                 this.setState({ hasError: false, error: null })
                 window.location.href = '/'
@@ -60,13 +51,14 @@ export class ErrorBoundary extends React.Component<
             >
               Return to Home
             </button>
+
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-8 text-left">
                 <summary className="cursor-pointer text-red-600">
                   Error Details (Development Only)
                 </summary>
                 <pre className="mt-4 p-4 bg-gray-100 rounded overflow-auto">
-                  {this.state.error.toString()}
+                  {String(this.state.error)}
                 </pre>
               </details>
             )}
@@ -78,4 +70,3 @@ export class ErrorBoundary extends React.Component<
     return this.props.children
   }
 }
-
