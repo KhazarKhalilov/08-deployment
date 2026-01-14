@@ -4,6 +4,10 @@
 
 This project demonstrates enterprise-level deployment practices for a modern Next.js e-commerce platform, featuring comprehensive CI/CD pipelines, performance monitoring, security compliance, and multi-environment deployment strategies.
 
+## My Github
+Please use this to check if vercel is deployed. Vercel doesn't work with gitea, only github
+https://github.com/KhazarKhalilov/08-deployment
+
 ## 🚀 Platform Overview
 
 This enterprise e-commerce platform showcases production-ready deployment excellence with:
